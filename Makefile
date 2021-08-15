@@ -3,11 +3,20 @@
 ################################################################################
 
 # Makefile by fletcher97
-# Version: 2.1
+# Version: 2.2
+
+# As of version 2.2 this Makefile expects an asan.c file to be present in the
+# asan folder inside the SRC_ROOT directory. A copy of the file is provided
+# with the Makefile. Also it now uses clang instead of gcc.
 
 # This makefile can be copied to a directory and it will generate the file
 # structure and initialize a git repository with the .init rule. Any variables
 # and rules for the specifique project can be added in the appropriate section.
+
+# By default this makefile assumes that libft, 42's student made library, a copy
+# of which can be obtained by cloning https://github.com/fletcher97/libft.git,
+# is being used. It can be removed by simply commenting any reference to it on
+# the library section.
 
 ################################################################################
 # Project Variables
@@ -35,19 +44,43 @@ NAMES := ${NAME1}
 # command like if VERBOSE was set to 3.
 VERBOSE := 1
 
+# Version 2.1 and above of this makefile can generate targets to use other
+# makefiles as dependencies. This feature will execute the rule of same name in
+# an other makefile. This can be usefull in many situation but also a hinderence
+# in others. If for example you just want to clean the root directory the clean
+# rule will be executed in any other makefile specified. You can deactivate the
+# creation of these targets by setting the bellow variable to 0.
+CREATE_LIB_TARGETS := 1
+
 # Minilibx to be selected when running in mac.
 # Possible values are: mms, opengl (default: mms)
-MLX = opengl
+MLX = mms
 
 ################################################################################
 # Compiler & Flags
 ################################################################################
 
-CC := gcc
+# Compiler
+CC := clang
 
+# Compiler flags
 CFLAGS := -Wall -Wextra -Werror -Wvla
+
+# Generic debug flags
 DFLAGS := -g
-SANITIZE := -fsanitize=address
+
+# Address sanitizing flags
+ASAN := -fsanitize=address -fsanitize-recover=address
+ASAN += -fno-omit-frame-pointer -fno-common
+ASAN += -fsanitize=pointer-subtract -fsanitize=pointer-compare
+# Technicaly UBSan but works with ASan
+ASAN += -fsanitize=undefined
+# Technicaly LSan but works with ASan
+ASAN += -fsanitize=leak
+# Thread sanitizing flags
+TSAN := -fsanitize=thread
+# Memory sanitizing flags
+MSAN := -fsanitize=memory -fsanitize-memory-track-origins
 
 ################################################################################
 # Root Folders
@@ -64,11 +97,35 @@ SRC_ROOT := src/
 # Libraries
 ################################################################################
 
-LIBFT_ROOT = ${LIB_ROOT}libft/
-LIBFT_INC = ${LIBFT_ROOT}inc/
-LIBFT = ${LIBFT_ROOT}bin/libft.a
+# Libft
+LIBFT_ROOT := ${LIB_ROOT}libft/
+LIBFT_INC := ${LIBFT_ROOT}inc/
+LIBFT := ${LIBFT_ROOT}bin/libft.a
 
-LIBS := -L${LIBFT_ROOT}bin/ -lft
+INC_DIRS += ${LIBFT_INC}
+LIBS += -L${LIBFT_ROOT}bin -lft
+
+# Libraries for which to create default targets. All libraries in this list will
+# have targets created autimatically. The targets that are created are set in
+# DEFAULT_LIB_RULES. The targets will have to format <library root>//<target>
+# and it will invoke make as follows:
+# `make -C <library root> <rule>`
+DEFAULT_LIBS := ${LIBFT_ROOT}
+
+# Default targets to create for libraries specified in DEFAULT_LIBS. This is a
+# small list of common targets in most makefiles.
+DEFAULT_LIB_RULES := all clean re
+
+# All projects with a copy of this makefile v2.1 and up ate garanteed to work
+# with these targets. If you wish to not use them just comment the lines you
+# don't want.
+DEFAULT_LIB_RULES += fclean clean_all clean_dep
+DEFAULT_LIB_RULES += debug debug_re debug_asan debug_asan_re
+
+# All projects with a copy of this makefile v2.2 and up ate garanteed to work
+# with these targets. If you wish to not use them just comment the lines you
+# don't want.
+DEFAULT_LIB_RULES += debug_tsan debug_tsan_re debug_msan debug_msan_re
 
 ################################################################################
 # Content Folders
@@ -93,7 +150,7 @@ DEP_DIRS = $(subst ${SRC_ROOT},${DEP_ROOT},${SRC_DIRS})
 # List of folders with header files.Each folder needs to end with a '/'. The
 # path to the folders is relative to the root of the makefile. Library includes
 # can be specified here.
-INC_DIRS := ${INC_ROOT} ${LIBFT_INC}
+INC_DIRS += ${INC_ROOT}
 
 ################################################################################
 # Files
@@ -112,26 +169,17 @@ INCS := ${addprefix -I,${INC_DIRS}}
 BINS := ${addprefix ${BIN_ROOT},${NAMES}}
 
 ################################################################################
-# VPATHS
-################################################################################
-
-vpath %.o $(OBJ_ROOT)
-vpath %.h $(INC_ROOT)
-vpath %.c $(SRC_DIRS)
-vpath %.d $(DEP_DIRS)
-
-################################################################################
 # Conditions
 ################################################################################
 
-ifeq ($(shell uname), Linux)
+ifeq ($(shell uname),Linux)
 	MLX_LIB_ROOT := ${LIB_ROOT}minilibx-linux/
 	MLX_LIB := ${MLX_LIB_ROOT}libmlx.a
 	INCS += -I${MLX_LIB_ROOT}
 	LIBS += -L${MLX_LIB_ROOT} -lmlx
 	LIBS += -L/usr/lib -lXext -lX11 -lm -lz
 	SED := sed -i.tmp --expression
-else ifeq ($(shell uname), Darwin)
+else ifeq ($(shell uname),Darwin)
 	ifeq (${MLX}, opengl)
 		MLX_LIB_ROOT := ${LIB_ROOT}minilibx_opengl_20191021/
 		LIBS += -L${MLX_LIB_ROOT} -lmlx
@@ -157,6 +205,19 @@ else ifeq ($(VERBOSE),4)
 	MAKEFLAGS += --debug=v
 endif
 
+ifeq (${CREATE_LIB_TARGETS},0)
+	undefine DEFAULT_LIBS
+endif
+
+################################################################################
+# VPATHS
+################################################################################
+
+vpath %.o $(OBJ_ROOT)
+vpath %.h $(INC_ROOT)
+vpath %.c $(SRC_DIRS)
+vpath %.d $(DEP_DIRS)
+
 ################################################################################
 # Project Target
 ################################################################################
@@ -164,18 +225,74 @@ endif
 all: ${BINS}
 
 .SECONDEXPANSION:
-
-# Exemple target
-${BIN_ROOT}${NAME1}: $$(call get_files,$${@F},$${OBJS_LIST}) ${LIBFT}
+${BIN_ROOT}${NAME1}: ${LIBFT} ${MLX_LIB} $$(call get_files,$${@F},$${OBJS_LIST})
 	${AT}printf "\033[33m[CREATING ${@F}]\033[0m\n" ${BLOCK}
 	${AT}mkdir -p ${@D} ${BLOCK}
-	${AT}${CC} ${CFLAGS} ${INCS} $(call get_files,${@F},${OBJS_LIST}) ${LIBS} -o $@ ${BLOCK}
+	${AT}${CC} ${CFLAGS} ${INCS} ${ASAN_FILE}\
+		$(call get_files,${@F},${OBJS_LIST}) ${LIBS} -o $@ ${BLOCK}
 
-${LIBFT}:
-	${AT}make -C ${LIBFT_ROOT} ${BLOCK}
+${MLX_LIB}: make -C ${MLX_LIB_ROOT}
+
+${LIBFT}: $$(call get_lib_target,$${DEFAULT_LIBS},all) ;
 
 ################################################################################
-# Setup Target
+# Clean Targets
+################################################################################
+
+clean: $$(call get_lib_target,$${DEFAULT_LIBS},$$@)
+	${AT}printf "\033[38;5;1m[REMOVING OBJECTS]\033[0m\n" ${BLOCK}
+	${AT}mkdir -p ${OBJ_ROOT} ${BLOCK}
+	${AT}find ${OBJ_ROOT} -type f -name "*.o" -delete ${BLOCK}
+
+fclean: $$(call get_lib_target,$${DEFAULT_LIBS},$$@)
+	${AT}printf "\033[38;5;1m[REMOVING OBJECTS]\033[0m\n" ${BLOCK}
+	${AT}mkdir -p ${OBJ_ROOT} ${BLOCK}
+	${AT}find ${OBJ_ROOT} -type f -name "*.o" -delete ${BLOCK}
+	${AT}printf "\033[38;5;1m[REMOVING BINARIES]\033[0m\n" ${BLOCK}
+	${AT}mkdir -p ${BIN_ROOT} ${BLOCK}
+	${AT}find ${BIN_ROOT} -type f\
+		$(addprefix -name ,${NAMES}) -delete ${BLOCK}
+
+clean_dep: $$(call get_lib_target,$${DEFAULT_LIBS},$$@)
+	${AT}printf "\033[38;5;1m[REMOVING DEPENDENCIES]\033[0m\n" ${BLOCK}
+	${AT}mkdir -p ${DEP_ROOT} ${BLOCK}
+	${AT}find ${DEP_ROOT} -type f -name "*.d" -delete ${BLOCK}
+
+clean_all: fclean clean_dep
+
+re: fclean all
+
+################################################################################
+# Debug Targets
+################################################################################
+
+debug: CFLAGS += ${DFLAGS}
+debug: $$(call get_lib_target,$${DEFAULT_LIBS},$$@) all
+
+obj/asan/asan.o: src/asan/asan.c
+	${AT}mkdir -p ${@D} ${BLOCK}
+	${AT}${CC} -o $@ -c $< ${BLOCK}
+
+debug_asan: CFLAGS += ${DFLAGS} ${ASAN}
+debug_asan: ASAN_FILE = obj/asan/asan.o
+debug_asan: $$(call get_lib_target,$${DEFAULT_LIBS},$$@) obj/asan/asan.o all
+
+debug_tsan: CFLAGS += ${DFLAGS} ${TSAN}
+debug_tsan: $$(call get_lib_target,$${DEFAULT_LIBS},$$@) all
+
+debug_msan: CFLAGS += ${DFLAGS} ${MSAN}
+debug_msan: $$(call get_lib_target,$${DEFAULT_LIBS},$$@) all
+
+debug_re: fclean debug
+
+debug_asan_re: fclean debug_asan
+
+debug_tsan_re: fclean debug_tsan
+
+debug_msan_re: fclean debug_msan
+
+################################################################################
+# Utility Targets
 ################################################################################
 
 .init:
@@ -195,50 +312,35 @@ ${LIBFT}:
 	${AT}git add Makefile ${BLOCK}
 	${AT}git commit -m "init" ${BLOCK}
 
-################################################################################
-# Clean Targets
-################################################################################
+# Meta target to force a target to be executed
+.FORCE: ;
 
-clean:
-	${AT}printf "\033[38;5;1m[REMOVING OBJECTS]\033[0m\n" ${BLOCK}
-	${AT}mkdir -p ${OBJ_ROOT} ${BLOCK}
-	${AT}find ${OBJ_ROOT} -type f -delete ${BLOCK}
-	${AT}make -C ${LIBFT_ROOT} ${@} ${BLOCK}
+# Print a specifique variable
+print-%: ; @echo $*=$($*)
 
-fclean: clean
-	${AT}printf "\033[38;5;1m[REMOVING BINARIES]\033[0m\n" ${BLOCK}
-	${AT}mkdir -p ${BIN_ROOT} ${BLOCK}
-	${AT}find ${BIN_ROOT} -type f -delete ${BLOCK}
-	${AT}make -C ${LIBFT_ROOT} ${@} ${BLOCK}
-
-clean_dep:
-	${AT}printf "\033[38;5;1m[REMOVING DEPENDENCIES]\033[0m\n" ${BLOCK}
-	${AT}mkdir -p ${DEP_ROOT} ${BLOCK}
-	${AT}find ${DEP_ROOT} -type f -delete ${BLOCK}
-	${AT}make -C ${LIBFT_ROOT} ${@} ${BLOCK}
-
-clean_all: clean_dep fclean
-	${AT}make -C ${LIBFT_ROOT} ${@} ${BLOCK}
-
-re: fclean all
-
-################################################################################
-# Debug Targets
-################################################################################
-
-debug_asan: CFLAGS += ${DFLAGS} ${SANITIZE}
-debug_asan: all
-
-debug: CFLAGS += ${DFLAGS}
-debug: all
-
-debug_re: fclean debug
+# List all the targets in alphabetical order
+targets:
+	${AT}${MAKE} LC_ALL=C -pRrq -f ${CURRENT_FILE} : 2>/dev/null\
+		| awk -v RS= -F: '/^# File/,/^# files hash-table stats/\
+			{if ($$1 !~ "^[#]") {print $$1}}\
+			{if ($$1 ~ "# makefile") {print $$2}}'\
+		| sort
 
 ################################################################################
 # .PHONY
 ################################################################################
 
-.PHONY : clean fclean clean_dep clean_all re all
+# Phony clean targets
+.PHONY: clean fclean clean_dep clean_all
+
+# Phony debug targets
+.PHONY: debug debug_re debug_asan debug_asan_re debug_tsan debug_tsan_re
+
+# Phony utility targets
+.PHONY: targets .FORCE
+
+# Phony execution targets
+.PHONY: re all
 
 ################################################################################
 # Constantes
@@ -246,13 +348,14 @@ debug_re: fclean debug
 
 NULL =
 SPACE = ${NULL} #
+CURRENT_FILE = ${MAKEFILE_LIST}
 
 ################################################################################
 # Functions
 ################################################################################
 
 # Get the index of a given word in a list
-_index = $(if $(findstring $1,$2), $(call _index,$1,\
+_index = $(if $(findstring $1,$2),$(call _index,$1,\
 	$(wordlist 2,$(words $2),$2),x $3),$3)
 index = $(words $(call _index,$1,$2))
 
@@ -265,46 +368,59 @@ rmdup = $(if $1,$(firstword $1) $(call rmdup,$(filter-out $(firstword $1),$1)))
 # Get files for a specific binary
 get_files = $(subst :,${SPACE},$(call lookup,$1,${NAMES},$2))
 
+# Get default target for libs given a rule
+get_lib_target = $(foreach lib,$1,${lib}/$2)
+
 ################################################################################
 # Target Templates
 ################################################################################
 
-define make_bin
-${1} : ${2}
+define make_bin_def
+${1}: ${2}
 endef
 
-define make_obj
-${1} : ${2} ${3}
+define make_obj_def
+${1}: ${2} ${3}
 	$${AT}printf "\033[38;5;14m[OBJ]: \033[38;5;47m$$@\033[0m\n" $${BLOCK}
 	$${AT}mkdir -p $${@D} $${BLOCK}
 	$${AT}$${CC} $${CFLAGS} $${INCS} -c $$< -o $$@ $${BLOCK}
 endef
 
-define make_dep
-${1} : ${2}
+define make_dep_def
+${1}: ${2}
 	$${AT}printf "\033[38;5;13m[DEP]: \033[38;5;47m$$@\033[0m\n" $${BLOCK}
 	$${AT}mkdir -p $${@D} $${BLOCK}
 	$${AT}$${CC} -MM $$< $${INCS} -MF $$@ $${BLOCK}
-	$${AT}$${SED} 's|:| $$@ :|' $$@ $${BLOCK}
-	$${AT}$${SED} '1 s|^|$${@D}/|' $$@ $${BLOCK}
-	$${AT}$${SED} '1 s|^$${DEP_ROOT}|$${OBJ_ROOT}|' $$@ $${BLOCK}
-	$${AT}rm -f $$@.tmp $${BLOCK}
+	$${AT}$${SED} 's|:| $$@ :|' $$@ $${SED_END} $${BLOCK}
+	$${AT}$${SED} '1 s|^|$${@D}/|' $$@ && rm -f $$@.tmp $${BLOCK}
+	$${AT}$${SED} '1 s|^$${DEP_ROOT}|$${OBJ_ROOT}|' $$@\
+		&& rm -f $$@.tmp $${BLOCK}
+endef
+
+define make_lib_def
+${1}/${2}: .FORCE
+	make -C ${1} ${2}
 endef
 
 ################################################################################
 # Target Generator
 ################################################################################
 
+ifneq (${BIN_ROOT},./)
 $(foreach bin,${BINS},$(eval\
-$(call make_bin,$(notdir ${bin}),${bin})))
+$(call make_bin_def,$(notdir ${bin}),${bin})))
+endif
 
 $(foreach src,${SRCS},$(eval\
-$(call make_dep,$(subst ${SRC_ROOT},${DEP_ROOT},${src:.c=.d}),${src})))
+$(call make_dep_def,$(subst ${SRC_ROOT},${DEP_ROOT},${src:.c=.d}),${src})))
 
 $(foreach src,${SRCS},$(eval\
-$(call make_obj,$(subst ${SRC_ROOT},${OBJ_ROOT},${src:.c=.o}),\
+$(call make_obj_def,$(subst ${SRC_ROOT},${OBJ_ROOT},${src:.c=.o}),\
 ${src},\
 $(subst ${SRC_ROOT},${DEP_ROOT},${src:.c=.d}))))
+
+$(foreach lib,${DEFAULT_LIBS},$(foreach target,${DEFAULT_LIB_RULES},$(eval\
+$(call make_lib_def,${lib},${target}))))
 
 ################################################################################
 # Includes
