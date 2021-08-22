@@ -6,7 +6,7 @@
 /*   By: mgueifao <mgueifao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/16 04:46:51 by mgueifao          #+#    #+#             */
-/*   Updated: 2021/07/11 20:05:02 by mgueifao         ###   ########.fr       */
+/*   Updated: 2021/08/23 00:07:52 by mgueifao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@
 #  define MLX_KEY_J 106
 #  define MLX_KEY_K 107
 #  define MLX_KEY_L 108
+
 // #  define MLX_KEY_
 // #  define MLX_KEY_
 // #  define MLX_KEY_
@@ -160,6 +161,7 @@
 #   define MLX_KEY_J 38
 #   define MLX_KEY_K 40
 #   define MLX_KEY_L 37
+
 // #   define MLX_KEY_
 // #   define MLX_KEY_
 // #   define MLX_KEY_

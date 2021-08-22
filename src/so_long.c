@@ -6,7 +6,7 @@
 /*   By: mgueifao <mgueifao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/11 19:15:40 by mgueifao          #+#    #+#             */
-/*   Updated: 2021/07/12 02:47:03 by mgueifao         ###   ########.fr       */
+/*   Updated: 2021/08/15 04:58:17 by mgueifao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,10 @@
 // 		return (0);
 // 	img = s->img;
 // 	img[0].img = mlx_new_image(app->mlx, s->width, s->height);
-// 	img[0].addr = mlx_get_data_addr(img[0].img, &img[0].bpp, &img[0].line, \
+// 	img[0].addr = mlx_get_data_addr(img[0].img, &img[0].bpp, &img[0].line,
 // 		&img[0].endian);
 // 	img[1].img = mlx_new_image(app->mlx, s->width, s->height);
-// 	img[1].addr = mlx_get_data_addr(img[1].img, &img[1].bpp, &img[1].line, \
+// 	img[1].addr = mlx_get_data_addr(img[1].img, &img[1].bpp, &img[1].line,
 // 		&img[1].endian);
 // 	return (1);
 // }
@@ -80,7 +80,7 @@
 // 	return (1);
 // }
 
-int	main(int argc, char *argv)
+int	main(int argc, char **argv)
 {
 	t_app	app;
 
