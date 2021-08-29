@@ -6,7 +6,7 @@
 /*   By: mgueifao <mgueifao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 17:44:12 by mgueifao          #+#    #+#             */
-/*   Updated: 2021/08/15 17:57:17 by mgueifao         ###   ########.fr       */
+/*   Updated: 2021/08/23 16:42:35 by mgueifao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,26 +15,11 @@
 
 #include "ft_stdio.h"
 #include "ft_stdlib.h"
+#include "ft_string.h"
 
-int	check_size(const char *map)
-{
-	int		fd;
-	int		ret;
-	size_t	size;
-	char	*line;
+#include "map.h"
 
-	fd = open(map, O_RDONLY);
-	ret = get_next_line(fd, &line);
-	if (ret == -1)
-		ft_putstr_fd("Error\nCouldn't read the map.\n", STDERR);
-	if (ret == 0)
-		ft_putstr_fd("Error\nMap is empty or has only one line.\n", STDERR);
-	if (ret <= 0)
-		return (0);
-	ft_free(line);
-}
-
-int	check_rect(const char *map)
+static int	check_rect(const char *map)
 {
 	int		fd;
 	int		ret;
@@ -51,37 +36,51 @@ int	check_rect(const char *map)
 		return (0);
 	size = ft_strlen(line);
 	ft_free(line);
-	while (ret)
+	while (ret > 0)
 	{
 		ret = get_next_line(fd, &line);
-		if (ret && ft_strlen(line) != size)
+		if ((ret > 0 && ft_strlen(line) != size) || (!ret && ft_strlen(line)
+				&& ft_strlen(line) != size))
 			ret = -1;
 		ft_free(line);
-		if (ret == -1)
-			break ;
 	}
 	return ((close(fd) && 0) || ret != -1);
 }
 
-int	check_cont(const char *map)
+static int	check_cont(const char *map)
 {
-	(void) map;
-	return (0);
+	int		fd;
+	int		ret;
+	char	*line;
+	char	*curr;
+
+	fd = open(map, O_RDONLY);
+	ret = 1;
+	while (ret > 0)
+	{
+		ret = get_next_line(fd, &line);
+		curr = line - 1;
+		while (++curr && *curr)
+			if (!ft_strchr(MAP_CHARS, *curr) && curr)
+				return (close(fd) && 0);
+		ft_free(line);
+	}
+	return (close(fd) || 1);
 }
 
 int	check_map(const char *map)
 {
-	int	lines;
+	int	ret;
 
-	lines = check_rect(map);
-	if (!lines)
+	ret = check_rect(map);
+	if (!ret)
 		ft_putstr_fd("Error\nMap is not rectangle.\n", STDERR);
-	if (!lines)
+	if (!ret)
 		return (0);
-	lines = check_cont(map);
-	if (!lines)
+	ret = check_cont(map);
+	if (!ret)
 		ft_putstr_fd("Error\nMap contains unknown char.\n", STDERR);
-	if (!lines)
+	if (!ret)
 		return (0);
-	return (lines);
+	return (ret);
 }
