@@ -22,7 +22,7 @@
 
 static int	line_to_arr(const char *line, char **out)
 {
-	int i;
+	int	i;
 
 	*out = ft_malloc(ft_strlen(line));
 	if (!*out)
@@ -35,9 +35,9 @@ static int	line_to_arr(const char *line, char **out)
 
 static int	map_to_arr(t_app *app, const char *map)
 {
-	int 	fd;
-	int 	i;
-	int 	ret;
+	int		fd;
+	int		i;
+	int		ret;
 	char	*line;
 
 	i = 0;
@@ -46,14 +46,15 @@ static int	map_to_arr(t_app *app, const char *map)
 	while (ret > 0)
 	{
 		ret = get_next_line(fd, &line);
-
+		line_to_arr(line, app->game.map);
 	}
 	return (0);
 }
 
 int	parse_map(t_app *app, const char *map)
 {
-	int fd;
+	int	fd;
+	int	size;
 
 	fd = open(map, O_RDONLY);
 	if (fd == -1)
@@ -61,7 +62,8 @@ int	parse_map(t_app *app, const char *map)
 	if (fd == -1)
 		return (0);
 	close(fd);
-	if (!check_map(map))
+	size = check_map(map);
+	if (!size)
 		return (0);
 	map_to_arr(app, map);
 	return (1);

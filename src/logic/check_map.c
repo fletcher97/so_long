@@ -19,11 +19,10 @@
 
 #include "map.h"
 
-static int	check_rect(const char *map)
+static int	check_rect(const char *map, t_game game)
 {
 	int		fd;
 	int		ret;
-	size_t	size;
 	char	*line;
 
 	fd = open(map, O_RDONLY);
@@ -34,13 +33,13 @@ static int	check_rect(const char *map)
 		ft_putstr_fd("Error\nMap is empty or has only one line.\n", STDERR);
 	if (ret <= 0)
 		return (0);
-	size = ft_strlen(line);
+	game.width = ft_strlen(line);
 	ft_free(line);
 	while (ret > 0)
 	{
 		ret = get_next_line(fd, &line);
-		if ((ret > 0 && ft_strlen(line) != size) || (!ret && ft_strlen(line)
-				&& ft_strlen(line) != size))
+		if ((ret > 0 && ft_strlen(line) != game.width)
+			|| (!ret && ft_strlen(line) && ft_strlen(line) != game.width))
 			ret = -1;
 		ft_free(line);
 	}
@@ -68,11 +67,11 @@ static int	check_cont(const char *map)
 	return (close(fd) || 1);
 }
 
-int	check_map(const char *map)
+int	check_map(const char *map, t_app *app)
 {
 	int	ret;
 
-	ret = check_rect(map);
+	ret = check_rect(map, app->game);
 	if (!ret)
 		ft_putstr_fd("Error\nMap is not rectangle.\n", STDERR);
 	if (!ret)
