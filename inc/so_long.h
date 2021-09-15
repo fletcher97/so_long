@@ -6,7 +6,7 @@
 /*   By: mgueifao <mgueifao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/11 19:19:34 by mgueifao          #+#    #+#             */
-/*   Updated: 2021/07/11 20:05:27 by mgueifao         ###   ########.fr       */
+/*   Updated: 2021/09/15 02:41:47 by mgueifao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,14 +36,18 @@ typedef struct s_player
 	int	x;
 	int	y;
 	int	dir;
-}				t_player;
+	int	dead;
+}				t_entit;
 
 typedef struct s_game
 {
 	int			width;
 	int			height;
-	int			**map;
-	t_player	player;
+	int			coll_left;
+	int			steps;
+	char		**map;
+	t_entit		player;
+	t_entit		*enemy;
 }				t_game;
 
 typedef struct s_app
