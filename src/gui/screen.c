@@ -6,21 +6,25 @@
 /*   By: mgueifao <mgueifao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/11 19:18:51 by mgueifao          #+#    #+#             */
-/*   Updated: 2021/08/15 05:00:15 by mgueifao         ###   ########.fr       */
+/*   Updated: 2021/09/15 02:39:20 by mgueifao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include <stdio.h>
 
 #include "ft_string.h"
 
 #include "mlx.h"
 
 #include "so_long.h"
+#include "gui.h"
+#include "map.h"
 
-void	get_screen(t_screen *screen)
+void	get_screen(t_app *app)
 {
-	screen->height = 768;
-	screen->width = 1366;
-	screen->title = ft_strdup("so_long");
+	app->screen.height = IMG_SIZE * app->game.height;
+	app->screen.width = IMG_SIZE * app->game.width;
+	app->screen.title = ft_strdup("so_long");
 }
 
 void	my_mlx_pixel_put(t_img *img, int x, int y, int color)
@@ -33,11 +37,28 @@ void	my_mlx_pixel_put(t_img *img, int x, int y, int color)
 
 void	next_frame(t_screen screen, void *mlx)
 {
-	t_img	tmp;
-
 	mlx_put_image_to_window(mlx, screen.win,
-		screen.img[1].img, 0, 0);
-	tmp = screen.img[0];
-	screen.img[0] = screen.img[1];
-	screen.img[1] = tmp;
+		screen.img[0].img, 0, 0);
+}
+
+void	render(t_app *app, int fcount)
+{
+	static char	*p = "";
+
+	if (fcount % SPEED == 0)
+		p = get_player_img(app, 1);
+	else if ((fcount + SPEED / 2) % SPEED == 0)
+		p = get_player_img(app, 3);
+	else if ((fcount + SPEED / 4) % (SPEED / 2) == 0)
+		p = get_player_img(app, 2);
+	place_img(app->mlx, app->screen.img, BASE VOID_XPM,
+		(t_pos){app->game.player.x, app->game.player.y});
+	if (app->game.map[app->game.player.y][app->game.player.x] == COLL)
+		place_img(app->mlx, app->screen.img, BASE COLL_XPM,
+			(t_pos){app->game.player.x, app->game.player.y});
+	else if (app->game.map[app->game.player.y][app->game.player.x] == EXIT)
+		place_img(app->mlx, app->screen.img, BASE EXIT_XPM,
+			(t_pos){app->game.player.x, app->game.player.y});
+	place_img(app->mlx, app->screen.img, p,
+		(t_pos){app->game.player.x, app->game.player.y});
 }
