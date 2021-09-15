@@ -6,7 +6,7 @@
 /*   By: mgueifao <mgueifao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 17:44:12 by mgueifao          #+#    #+#             */
-/*   Updated: 2021/08/23 16:42:35 by mgueifao         ###   ########.fr       */
+/*   Updated: 2021/09/14 01:00:44 by mgueifao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 
 #include "map.h"
 
-static int	check_rect(const char *map, t_game game)
+static int	check_rect(const char *map, t_game *game)
 {
 	int		fd;
 	int		ret;
@@ -33,13 +33,14 @@ static int	check_rect(const char *map, t_game game)
 		ft_putstr_fd("Error\nMap is empty or has only one line.\n", STDERR);
 	if (ret <= 0)
 		return (0);
-	game.width = ft_strlen(line);
+	(game->width = ft_strlen(line)) && (game->height = 1);
 	ft_free(line);
 	while (ret > 0)
 	{
-		ret = get_next_line(fd, &line);
-		if ((ret > 0 && ft_strlen(line) != game.width)
-			|| (!ret && ft_strlen(line) && ft_strlen(line) != game.width))
+		(ret = get_next_line(fd, &line)) && (game->height++);
+		if ((ret > 0 && ft_strlen(line) != (size_t) game->width)
+			|| (!ret && ft_strlen(line)
+				&& ft_strlen(line) != (size_t) game->width))
 			ret = -1;
 		ft_free(line);
 	}
@@ -60,25 +61,29 @@ static int	check_cont(const char *map)
 		ret = get_next_line(fd, &line);
 		curr = line - 1;
 		while (++curr && *curr)
+		{
 			if (!ft_strchr(MAP_CHARS, *curr) && curr)
+			{
+				ft_putstr_fd("Error\nMap contains unknown char.\n", STDERR);
+				ft_free(line);
 				return (close(fd) && 0);
+			}
+		}
 		ft_free(line);
 	}
-	return (close(fd) || 1);
+	return ((close(fd) && 0) || 1);
 }
 
 int	check_map(const char *map, t_app *app)
 {
 	int	ret;
 
-	ret = check_rect(map, app->game);
+	ret = check_rect(map, &(app->game));
 	if (!ret)
 		ft_putstr_fd("Error\nMap is not rectangle.\n", STDERR);
 	if (!ret)
 		return (0);
 	ret = check_cont(map);
-	if (!ret)
-		ft_putstr_fd("Error\nMap contains unknown char.\n", STDERR);
 	if (!ret)
 		return (0);
 	return (ret);
