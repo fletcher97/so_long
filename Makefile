@@ -54,7 +54,7 @@ CREATE_LIB_TARGETS := 1
 
 # Minilibx to be selected when running in mac.
 # Possible values are: mms, opengl (default: mms)
-MLX = opengl
+MLX = mms
 
 ################################################################################
 # Compiler & Flags
