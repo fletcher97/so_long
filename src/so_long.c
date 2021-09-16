@@ -6,7 +6,7 @@
 /*   By: mgueifao <mgueifao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/15 02:42:30 by mgueifao          #+#    #+#             */
-/*   Updated: 2021/09/16 04:18:41 by mgueifao         ###   ########.fr       */
+/*   Updated: 2021/09/16 20:59:14 by mgueifao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,6 @@ void	terminate(t_app *app, int i)
 		mlx_destroy_window(app->mlx, app->screen.win);
 	if (app->screen.title)
 		ft_free(app->screen.title);
-	if (app->mlx)
-		mlx_destroy_display(app->mlx);
 	if (app->mlx)
 		ft_free(app->mlx);
 	i = -1;

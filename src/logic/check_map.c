@@ -6,7 +6,7 @@
 /*   By: mgueifao <mgueifao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 17:44:12 by mgueifao          #+#    #+#             */
-/*   Updated: 2021/09/16 04:27:24 by mgueifao         ###   ########.fr       */
+/*   Updated: 2021/09/16 21:00:17 by mgueifao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,8 +76,8 @@ static int	check_cont(const char *map)
 
 int	check_boudaries(t_game *game)
 {
-	int i;
-	int j;
+	int	i;
+	int	j;
 
 	i = -1;
 	while (++i < game->height)

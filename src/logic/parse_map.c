@@ -6,7 +6,7 @@
 /*   By: mgueifao <mgueifao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/11 19:39:50 by mgueifao          #+#    #+#             */
-/*   Updated: 2021/09/16 04:33:32 by mgueifao         ###   ########.fr       */
+/*   Updated: 2021/09/16 20:59:52 by mgueifao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,8 @@ int	parse_map(t_app *app, const char *map)
 	if (!size)
 		return (0);
 	map_to_arr(&(app->game), map);
-	if (!check_boudaries(&(app->game))){
+	if (!check_boudaries(&(app->game)))
+	{
 		ft_putstr_fd("Error\nMap is not closed.\n", STDERR);
 		return (0);
 	}

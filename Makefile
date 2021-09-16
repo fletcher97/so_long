@@ -54,7 +54,7 @@ CREATE_LIB_TARGETS := 1
 
 # Minilibx to be selected when running in mac.
 # Possible values are: mms, opengl (default: mms)
-MLX = mms
+MLX = opengl
 
 ################################################################################
 # Compiler & Flags
@@ -76,7 +76,7 @@ ASAN += -fsanitize=pointer-subtract -fsanitize=pointer-compare
 # Technicaly UBSan but works with ASan
 ASAN += -fsanitize=undefined
 # Technicaly LSan but works with ASan
-ASAN += -fsanitize=leak
+# ASAN += -fsanitize=leak
 # Thread sanitizing flags
 TSAN := -fsanitize=thread
 # Memory sanitizing flags
@@ -188,7 +188,7 @@ else ifeq ($(shell uname),Darwin)
 	else ifeq (${MLX}, mms)
 		MLX_LIB_ROOT := ${LIB_ROOT}minilibx_mms_20200219/
 		LIBS += -L${MLX_LIB_ROOT} -lmlx
-		MLX_LIB := ${MLX_LIB_ROOT}libmlx.a
+		MLX_LIB := ${MLX_LIB_ROOT}libmlx.dylib
 	endif
 	INCS += $(addprefix -I, ${MLX_LIB_ROOT})
 	SED := sed -i.tmp

@@ -6,7 +6,7 @@
 /*   By: mgueifao <mgueifao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/15 02:43:05 by mgueifao          #+#    #+#             */
-/*   Updated: 2021/09/15 02:43:06 by mgueifao         ###   ########.fr       */
+/*   Updated: 2021/09/16 20:49:30 by mgueifao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,5 @@ const char *
 		strict_init_order=1:\
 		detect_invalid_pointer_pairs=9:\
 		halt_on_error=0:\
-		detect_leaks=1:\
 		use_unaligned=1");
 }
