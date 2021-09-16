@@ -6,7 +6,7 @@
 /*   By: mgueifao <mgueifao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/14 23:58:49 by mgueifao          #+#    #+#             */
-/*   Updated: 2021/09/16 03:01:07 by mgueifao         ###   ########.fr       */
+/*   Updated: 2021/09/16 04:35:47 by mgueifao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	print_end_msg(t_app *app)
 		ft_putnbr_fd(app->game.steps, STDOUT);
 		ft_putendl_fd(" moves to finish.", STDOUT);
 	}
-	else
+	else if (app->game.player.dead)
 		ft_putendl_fd("You died without reaching the end.", STDOUT);
 }
 
