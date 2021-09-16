@@ -6,7 +6,7 @@
 /*   By: mgueifao <mgueifao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 17:44:12 by mgueifao          #+#    #+#             */
-/*   Updated: 2021/09/14 01:00:44 by mgueifao         ###   ########.fr       */
+/*   Updated: 2021/09/16 04:27:24 by mgueifao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,25 @@ static int	check_cont(const char *map)
 		ft_free(line);
 	}
 	return ((close(fd) && 0) || 1);
+}
+
+int	check_boudaries(t_game *game)
+{
+	int i;
+	int j;
+
+	i = -1;
+	while (++i < game->height)
+	{
+		j = -1;
+		while (++j < game->width)
+		{
+			if ((i == 0 || i == game->height - 1 || j == 0
+					|| j == game->width - 1) && game->map[i][j] != WALL)
+				return (0);
+		}
+	}
+	return (1);
 }
 
 int	check_map(const char *map, t_app *app)
