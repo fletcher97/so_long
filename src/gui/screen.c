@@ -6,7 +6,7 @@
 /*   By: mgueifao <mgueifao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/11 19:18:51 by mgueifao          #+#    #+#             */
-/*   Updated: 2021/09/15 02:39:20 by mgueifao         ###   ########.fr       */
+/*   Updated: 2021/09/16 02:59:12 by mgueifao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,16 +41,24 @@ void	next_frame(t_screen screen, void *mlx)
 		screen.img[0].img, 0, 0);
 }
 
-void	render(t_app *app, int fcount)
+int	get_frame(int fcount)
 {
-	static char	*p = "";
+	static int	frame = 1;
 
 	if (fcount % SPEED == 0)
-		p = get_player_img(app, 1);
+		frame = 1;
 	else if ((fcount + SPEED / 2) % SPEED == 0)
-		p = get_player_img(app, 3);
+		frame = 3;
 	else if ((fcount + SPEED / 4) % (SPEED / 2) == 0)
-		p = get_player_img(app, 2);
+		frame = 2;
+	return (frame);
+}
+
+void	render(t_app *app, int fcount)
+{
+	char	*p;
+
+	p = get_player_img(app, get_frame(fcount));
 	place_img(app->mlx, app->screen.img, BASE VOID_XPM,
 		(t_pos){app->game.player.x, app->game.player.y});
 	if (app->game.map[app->game.player.y][app->game.player.x] == COLL)

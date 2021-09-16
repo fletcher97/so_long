@@ -6,7 +6,7 @@
 /*   By: mgueifao <mgueifao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/15 02:42:30 by mgueifao          #+#    #+#             */
-/*   Updated: 2021/09/16 02:23:47 by mgueifao         ###   ########.fr       */
+/*   Updated: 2021/09/16 03:01:27 by mgueifao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,6 @@ int	stop(int key_code, void *param)
 int	update(void *param)
 {
 	char		*steps_string;
-	static int	frame_count = 0;
 	t_app		*app;
 
 	app = ((t_app *) param);
@@ -101,7 +100,7 @@ int	update(void *param)
 		terminate(app, 0);
 		exit(0);
 	}
-	render(app, frame_count++);
+	render(app, app->screen.frame_count++);
 	next_frame(app->screen, app->mlx);
 	steps_string = ft_itoa(app->game.steps);
 	mlx_string_put(app->mlx, app->screen.win, app->screen.width

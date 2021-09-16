@@ -6,7 +6,7 @@
 /*   By: mgueifao <mgueifao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/14 23:58:49 by mgueifao          #+#    #+#             */
-/*   Updated: 2021/09/16 02:41:17 by mgueifao         ###   ########.fr       */
+/*   Updated: 2021/09/16 03:01:07 by mgueifao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static void	move_player(t_app *app, int x, int y, int dir)
 		app->game.player.dead = 1;
 	else if (app->game.map[y][x] == ENEM)
 		app->game.player.dead = 2;
-	render(app, 0);
+	render(app, get_frame(app->screen.frame_count));
 }
 
 void	move(t_app *app, int key_code)

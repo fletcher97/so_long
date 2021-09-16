@@ -6,7 +6,7 @@
 /*   By: mgueifao <mgueifao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/13 23:41:56 by mgueifao          #+#    #+#             */
-/*   Updated: 2021/09/16 01:31:17 by mgueifao         ###   ########.fr       */
+/*   Updated: 2021/09/16 02:58:18 by mgueifao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,5 +57,6 @@ int		buildbg(t_app *app);
 void	next_frame(t_screen screen, void *mlx);
 int		place_img(void *mlx, t_img *dst, char *path, t_pos p);
 char	*get_player_img(t_app *app, int frame);
+int		get_frame(int fcount);
 
 #endif
