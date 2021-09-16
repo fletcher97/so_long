@@ -6,7 +6,7 @@
 /*   By: mgueifao <mgueifao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/11 19:39:50 by mgueifao          #+#    #+#             */
-/*   Updated: 2021/09/16 20:59:52 by mgueifao         ###   ########.fr       */
+/*   Updated: 2021/09/16 21:40:55 by mgueifao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ int	parse_map(t_app *app, const char *map)
 	int	size;
 
 	fd = open(map, O_RDONLY);
-	if (fd == -1)
+	if (fd == -1 || !ft_strendw(map, ".ber"))
 		ft_putstr_fd("Error\nCouldn't read the map.\n", STDERR);
 	if (fd == -1)
 		return (0);
