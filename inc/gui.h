@@ -6,7 +6,7 @@
 /*   By: mgueifao <mgueifao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/13 23:41:56 by mgueifao          #+#    #+#             */
-/*   Updated: 2021/09/16 02:58:18 by mgueifao         ###   ########.fr       */
+/*   Updated: 2021/09/16 21:07:06 by mgueifao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 
 # include "so_long.h"
 
-# define IMG_SIZE 128
-# define SPEED 80
+# define IMG_SIZE 64
+# define SPEED 40
 
 # if IMG_SIZE==16
 #  define BASE "./res/assets/16/"
