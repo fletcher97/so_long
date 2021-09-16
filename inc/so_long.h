@@ -6,7 +6,7 @@
 /*   By: mgueifao <mgueifao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/11 19:19:34 by mgueifao          #+#    #+#             */
-/*   Updated: 2021/09/15 02:41:47 by mgueifao         ###   ########.fr       */
+/*   Updated: 2021/09/16 00:46:06 by mgueifao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ typedef struct s_game
 	int			steps;
 	char		**map;
 	t_entit		player;
+	int			en_count;
 	t_entit		*enemy;
 }				t_game;
 

@@ -6,11 +6,12 @@
 /*   By: mgueifao <mgueifao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/14 00:49:19 by mgueifao          #+#    #+#             */
-/*   Updated: 2021/09/15 02:41:25 by mgueifao         ###   ########.fr       */
+/*   Updated: 2021/09/16 02:19:34 by mgueifao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_stdio.h"
+#include "ft_stdlib.h"
 
 #include "so_long.h"
 #include "map.h"
@@ -46,6 +47,21 @@ int	place_img(void *mlx, t_img *dst, char *path, t_pos p)
 	return (mlx_destroy_image(mlx, img.img) || 1);
 }
 
+static char	*place_w_trans(t_app *app, t_pos p)
+{
+	char	*path;
+
+	if (app->game.map[p.y][p.x] == EXIT)
+		path = BASE EXIT_XPM;
+	else if (app->game.map[p.y][p.x] == COLL)
+		path = BASE COLL_XPM;
+	else if (app->game.map[p.y][p.x] == ENEM)
+		path = BASE ENEM_XPM;
+	if (!place_img(app->mlx, app->screen.img, BASE VOID_XPM, p))
+		return (NULL);
+	return (path);
+}
+
 int	buildbg(t_app *app)
 {
 	int		i;
@@ -63,11 +79,9 @@ int	buildbg(t_app *app)
 				path = BASE WALL_XPM;
 			else if (app->game.map[i][j] == VOID)
 				path = BASE VOID_XPM;
-			else if (app->game.map[i][j] == EXIT || app->game.map[i][j] == COLL)
-				(((ret = (app->game.map[i][j] == EXIT))
-							&& (path = BASE EXIT_XPM))
-						|| (path = BASE COLL_XPM)) && (ret = place_img(app->mlx,
-							app->screen.img, BASE VOID_XPM, (t_pos){j, i}));
+			else if (app->game.map[i][j] == EXIT || app->game.map[i][j] == COLL
+					|| app->game.map[i][j] == ENEM)
+				path = place_w_trans(app, (t_pos){j, i});
 			ret = place_img(app->mlx, app->screen.img, path,
 					(t_pos){j, i});
 		}

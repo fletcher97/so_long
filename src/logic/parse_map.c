@@ -6,7 +6,7 @@
 /*   By: mgueifao <mgueifao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/11 19:39:50 by mgueifao          #+#    #+#             */
-/*   Updated: 2021/09/15 02:59:30 by mgueifao         ###   ########.fr       */
+/*   Updated: 2021/09/16 02:26:18 by mgueifao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,11 +58,12 @@ static int	map_read_cont(t_game *game)
 		{
 			if (game->map[i][j] == PLAY)
 			{
-				game->map[i][j] = VOID;
-				game->player.x = j;
+				(game->map[i][j] = VOID) && (game->player.x = j);
 				game->player.y = i;
 				game->player.dir = LEFT;
 			}
+			else if (game->map[i][j] == ENEM)
+				game->en_count++;
 			else if (game->map[i][j] == COLL)
 				game->coll_left++;
 			else if (game->map[i][j] == EXIT)
@@ -70,6 +71,29 @@ static int	map_read_cont(t_game *game)
 		}
 	}
 	return (exit && game->coll_left > 0 && game->player.dir);
+}
+
+static void	get_enem(t_app *app)
+{
+	int	i;
+	int	j;
+	int	e;
+
+	i = -1;
+	e = -1;
+	app->game.enemy = ft_malloc(sizeof(t_entit) * app->game.en_count);
+	if (!app->game.enemy)
+		return ;
+	while (++i < app->game.height && e < app->game.en_count)
+	{
+		j = -1;
+		while (++j < app->game.width && e < app->game.en_count)
+		{
+			if (app->game.map[i][j] == ENEM)
+				((app->game.enemy[++e].y = i) && 0)
+					|| (app->game.enemy[e].x = j);
+		}
+	}
 }
 
 int	parse_map(t_app *app, const char *map)
@@ -89,5 +113,6 @@ int	parse_map(t_app *app, const char *map)
 	map_to_arr(&(app->game), map);
 	if (!map_read_cont(&(app->game)))
 		ft_putstr_fd("Error\nMap is missing elements.\n", STDERR);
+	get_enem(app);
 	return (1);
 }

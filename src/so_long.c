@@ -6,7 +6,7 @@
 /*   By: mgueifao <mgueifao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/15 02:42:30 by mgueifao          #+#    #+#             */
-/*   Updated: 2021/09/15 02:48:05 by mgueifao         ###   ########.fr       */
+/*   Updated: 2021/09/16 02:23:47 by mgueifao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,10 +47,8 @@ static int	init(t_app *app, char **argv)
 	return (buildbg(app));
 }
 
-void	terminate(t_app *app)
+void	terminate(t_app *app, int i)
 {
-	int	i;
-
 	print_end_msg(app);
 	if (app->mlx && app->screen.img && app->screen.img->img)
 		mlx_destroy_image(app->mlx, app->screen.img->img);
@@ -68,6 +66,8 @@ void	terminate(t_app *app)
 	while (++i < app->game.height)
 		if (app->game.map && app->game.map[i])
 			ft_free(app->game.map[i]);
+	if (app->game.enemy)
+		ft_free(app->game.enemy);
 	if (app->game.map)
 		ft_free(app->game.map);
 	ft_free(app);
@@ -80,7 +80,7 @@ int	stop(int key_code, void *param)
 	app = ((t_app *) param);
 	if (key_code == MLX_KEY_ESC || app->game.player.dead)
 	{
-		terminate(app);
+		terminate(app, 0);
 		exit(0);
 	}
 	if (key_code == MLX_KEY_W || key_code == MLX_KEY_A || key_code == MLX_KEY_S
@@ -98,7 +98,7 @@ int	update(void *param)
 	app = ((t_app *) param);
 	if (app->game.player.dead)
 	{
-		terminate(app);
+		terminate(app, 0);
 		exit(0);
 	}
 	render(app, frame_count++);
@@ -107,6 +107,7 @@ int	update(void *param)
 	mlx_string_put(app->mlx, app->screen.win, app->screen.width
 		- (6 * ft_strlen(steps_string)), 10, 0x00FFFFFF, steps_string);
 	ft_free(steps_string);
+	mlx_do_sync(app->mlx);
 	return (1);
 }
 
@@ -121,7 +122,7 @@ int	main(int argc, char **argv)
 	app = ft_calloc(1, sizeof(t_app));
 	if (!init(app, argv))
 	{
-		terminate(app);
+		terminate(app, 0);
 		exit(0);
 	}
 	mlx_key_hook(app->screen.win, stop, app);

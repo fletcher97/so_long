@@ -6,7 +6,7 @@
 /*   By: mgueifao <mgueifao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/14 23:58:49 by mgueifao          #+#    #+#             */
-/*   Updated: 2021/09/15 02:51:34 by mgueifao         ###   ########.fr       */
+/*   Updated: 2021/09/16 02:18:57 by mgueifao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,11 +44,13 @@ static void	move_player(t_app *app, int x, int y, int dir)
 	if (app->game.map[app->game.player.y][app->game.player.x] == EXIT)
 		place_img(app->mlx, app->screen.img, BASE EXIT_XPM,
 			(t_pos){app->game.player.x, app->game.player.y});
-	(app->game.player.x = x) && (app->game.player.y = y);
+	((app->game.player.x = x) && 0) || (app->game.player.y = y);
 	app->game.steps++;
 	app->game.player.dir = dir;
 	if (app->game.map[y][x] == EXIT && !app->game.coll_left)
 		app->game.player.dead = 1;
+	else if (app->game.map[y][x] == ENEM)
+		app->game.player.dead = 2;
 	render(app, 0);
 }
 
@@ -73,5 +75,9 @@ void	move(t_app *app, int key_code)
 		return ;
 	if (app->game.map[py][px] != WALL && 0 < px && px < app->game.width
 			&& 0 < py && py < app->game.height && dir)
+	{
 		move_player(app, px, py, dir);
+		if (!app->game.player.dead)
+			move_enemy(app);
+	}
 }

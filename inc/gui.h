@@ -6,7 +6,7 @@
 /*   By: mgueifao <mgueifao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/13 23:41:56 by mgueifao          #+#    #+#             */
-/*   Updated: 2021/09/15 02:55:17 by mgueifao         ###   ########.fr       */
+/*   Updated: 2021/09/16 01:31:17 by mgueifao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include "so_long.h"
 
-# define IMG_SIZE 32
+# define IMG_SIZE 128
 # define SPEED 80
 
 # if IMG_SIZE==16
@@ -32,6 +32,7 @@
 # define WALL_XPM "wall.xpm"
 # define EXIT_XPM "exit.xpm"
 # define COLL_XPM "fish.xpm"
+# define ENEM_XPM "jellyfish.xpm"
 # define PLAY_XPM "player"
 
 # define ONE "1.xpm"

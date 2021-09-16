@@ -6,7 +6,7 @@
 /*   By: mgueifao <mgueifao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/11 19:41:21 by mgueifao          #+#    #+#             */
-/*   Updated: 2021/09/14 22:29:10 by mgueifao         ###   ########.fr       */
+/*   Updated: 2021/09/16 01:30:10 by mgueifao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include "so_long.h"
 
-# define MAP_CHARS "01CEP"
+# define MAP_CHARS "01CEPB"
 
 # define VOID '0'
 # define WALL '1'
