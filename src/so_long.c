@@ -6,7 +6,7 @@
 /*   By: mgueifao <mgueifao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/15 02:42:30 by mgueifao          #+#    #+#             */
-/*   Updated: 2021/09/16 03:01:27 by mgueifao         ###   ########.fr       */
+/*   Updated: 2021/09/16 04:18:41 by mgueifao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ void	terminate(t_app *app, int i)
 	if (app->game.map)
 		ft_free(app->game.map);
 	ft_free(app);
+	exit(0);
 }
 
 int	stop(int key_code, void *param)
@@ -79,10 +80,7 @@ int	stop(int key_code, void *param)
 
 	app = ((t_app *) param);
 	if (key_code == MLX_KEY_ESC || app->game.player.dead)
-	{
 		terminate(app, 0);
-		exit(0);
-	}
 	if (key_code == MLX_KEY_W || key_code == MLX_KEY_A || key_code == MLX_KEY_S
 		|| key_code == MLX_KEY_D)
 		move(app, key_code);
@@ -96,10 +94,7 @@ int	update(void *param)
 
 	app = ((t_app *) param);
 	if (app->game.player.dead)
-	{
 		terminate(app, 0);
-		exit(0);
-	}
 	render(app, app->screen.frame_count++);
 	next_frame(app->screen, app->mlx);
 	steps_string = ft_itoa(app->game.steps);
@@ -120,13 +115,10 @@ int	main(int argc, char **argv)
 		return (1);
 	app = ft_calloc(1, sizeof(t_app));
 	if (!init(app, argv))
-	{
 		terminate(app, 0);
-		exit(0);
-	}
 	mlx_key_hook(app->screen.win, stop, app);
 	mlx_loop_hook(app->mlx, update, app);
-	mlx_do_sync(app->mlx);
+	mlx_hook(app->screen.win, 17, (1L << 17), stop_hook, app);
 	mlx_loop(app->mlx);
 	return (0);
 }

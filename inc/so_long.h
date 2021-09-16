@@ -6,7 +6,7 @@
 /*   By: mgueifao <mgueifao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/11 19:19:34 by mgueifao          #+#    #+#             */
-/*   Updated: 2021/09/16 03:01:01 by mgueifao         ###   ########.fr       */
+/*   Updated: 2021/09/16 04:08:08 by mgueifao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,5 +58,8 @@ typedef struct s_app
 	t_screen	screen;
 	t_game		game;
 }				t_app;
+
+void	terminate(t_app *app, int i);
+int		stop_hook(void *param);
 
 #endif
