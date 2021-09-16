@@ -6,7 +6,7 @@
 /*   By: mgueifao <mgueifao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/15 02:42:30 by mgueifao          #+#    #+#             */
-/*   Updated: 2021/09/16 20:59:14 by mgueifao         ###   ########.fr       */
+/*   Updated: 2021/09/16 21:30:45 by mgueifao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,8 +96,7 @@ int	update(void *param)
 	render(app, app->screen.frame_count++);
 	next_frame(app->screen, app->mlx);
 	steps_string = ft_itoa(app->game.steps);
-	mlx_string_put(app->mlx, app->screen.win, app->screen.width
-		- (6 * ft_strlen(steps_string)), 10, 0x00FFFFFF, steps_string);
+	mlx_string_put(app->mlx, app->screen.win, 0, 10, 0x00FFFFFF, steps_string);
 	ft_free(steps_string);
 	mlx_do_sync(app->mlx);
 	return (1);
