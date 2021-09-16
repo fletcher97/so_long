@@ -6,7 +6,7 @@
 /*   By: mgueifao <mgueifao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 17:44:12 by mgueifao          #+#    #+#             */
-/*   Updated: 2021/09/16 21:00:17 by mgueifao         ###   ########.fr       */
+/*   Updated: 2021/09/16 21:46:36 by mgueifao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static int	check_rect(const char *map, t_game *game)
 	if (ret == 0)
 		ft_putstr_fd("Error\nMap is empty or has only one line.\n", STDERR);
 	if (ret <= 0)
-		return (0);
+		return (-1);
 	(game->width = ft_strlen(line)) && (game->height = 1);
 	ft_free(line);
 	while (ret > 0)
@@ -100,7 +100,7 @@ int	check_map(const char *map, t_app *app)
 	ret = check_rect(map, &(app->game));
 	if (!ret)
 		ft_putstr_fd("Error\nMap is not rectangle.\n", STDERR);
-	if (!ret)
+	if (!ret || ret == -1)
 		return (0);
 	ret = check_cont(map);
 	if (!ret)
