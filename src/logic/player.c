@@ -6,7 +6,7 @@
 /*   By: mgueifao <mgueifao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/14 23:58:49 by mgueifao          #+#    #+#             */
-/*   Updated: 2021/09/16 02:18:57 by mgueifao         ###   ########.fr       */
+/*   Updated: 2021/09/16 02:41:17 by mgueifao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ void	move(t_app *app, int key_code)
 			&& 0 < py && py < app->game.height && dir)
 	{
 		move_player(app, px, py, dir);
+		printf("%d\n", app->game.steps);
 		if (!app->game.player.dead)
 			move_enemy(app);
 	}
