@@ -3,15 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   so_long.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgueifao <mgueifao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fletcher <fletcher@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/11 19:19:34 by mgueifao          #+#    #+#             */
-/*   Updated: 2021/09/16 04:08:08 by mgueifao         ###   ########.fr       */
+/*   Updated: 2022/03/08 22:50:04 by fletcher         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SO_LONG_H
 # define SO_LONG_H
+
+#include <time.h>
 
 typedef struct s_img
 {
@@ -36,6 +38,8 @@ typedef struct s_player
 {
 	int	x;
 	int	y;
+	int	x_mov;
+	int	y_mov;
 	int	dir;
 	int	dead;
 }				t_entit;
@@ -55,6 +59,7 @@ typedef struct s_game
 typedef struct s_app
 {
 	void		*mlx;
+	clock_t		last_tick;
 	t_screen	screen;
 	t_game		game;
 }				t_app;

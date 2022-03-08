@@ -3,13 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   so_long.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgueifao <mgueifao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fletcher <fletcher@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/15 02:42:30 by mgueifao          #+#    #+#             */
-/*   Updated: 2021/09/16 21:30:45 by mgueifao         ###   ########.fr       */
+/*   Updated: 2022/03/08 22:56:49 by fletcher         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <time.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -21,6 +22,7 @@
 #include "ft_string.h"
 
 #include "mlx_keys.h"
+#include "listeners.h"
 #include "map.h"
 #include "logic.h"
 #include "gui.h"
@@ -72,33 +74,22 @@ void	terminate(t_app *app, int i)
 	exit(0);
 }
 
-int	stop(int key_code, void *param)
-{
-	t_app	*app;
-
-	app = ((t_app *) param);
-	if (key_code == MLX_KEY_ESC || app->game.player.dead)
-		terminate(app, 0);
-	if (key_code == MLX_KEY_W || key_code == MLX_KEY_A || key_code == MLX_KEY_S
-		|| key_code == MLX_KEY_D)
-		move(app, key_code);
-	return (0);
-}
-
 int	update(void *param)
 {
-	char		*steps_string;
 	t_app		*app;
+	clock_t		current = clock();
 
 	app = ((t_app *) param);
 	if (app->game.player.dead)
 		terminate(app, 0);
+	current = clock();
+	while ((double)(current - app->last_tick) / CLOCKS_PER_SEC > (1.0 / TICK_RATE) * 1)
+	{
+		tick(&app->game);
+		app->last_tick += (1.0 / TICK_RATE) * 1000000;
+	}
 	render(app, app->screen.frame_count++);
 	next_frame(app->screen, app->mlx);
-	steps_string = ft_itoa(app->game.steps);
-	mlx_string_put(app->mlx, app->screen.win, 0, 10, 0x00FFFFFF, steps_string);
-	ft_free(steps_string);
-	mlx_do_sync(app->mlx);
 	return (1);
 }
 
@@ -113,9 +104,9 @@ int	main(int argc, char **argv)
 	app = ft_calloc(1, sizeof(t_app));
 	if (!init(app, argv))
 		terminate(app, 0);
-	mlx_key_hook(app->screen.win, stop, app);
+	set_listeners(app);
 	mlx_loop_hook(app->mlx, update, app);
-	mlx_hook(app->screen.win, 17, (1L << 17), stop_hook, app);
+	app->last_tick = clock();
 	mlx_loop(app->mlx);
 	return (0);
 }
