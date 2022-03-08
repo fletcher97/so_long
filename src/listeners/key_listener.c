@@ -6,14 +6,14 @@
 /*   By: fletcher <fletcher@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/25 07:24:09 by mgueifao          #+#    #+#             */
-/*   Updated: 2022/03/08 22:50:41 by fletcher         ###   ########.fr       */
+/*   Updated: 2022/03/08 22:54:59 by fletcher         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
 #include "mlx_keys.h"
 
-int	stop(int key_code, void *param)
+int	stop(void *param)
 {
 	t_app	*app;
 
